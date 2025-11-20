@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kemuyang Avenue - Type B Double Storey Launch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* FILE UPLOAD SECTION - Remove this after you paste your image */
+        .upload-section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .upload-section h2 {
+            color: #059669;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .upload-section input {
+            margin: 20px 0;
+        }
+
+        .upload-section button {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-section button:hover {
+            background: #059669;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: none;
+        }
+
+        .bg-image.loaded {
+            display: block;
+        }
+
+        .overlay-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.35) 0%, 
+                rgba(0,0,0,0.1) 30%,
+                rgba(0,0,0,0.1) 70%, 
+                rgba(0,0,0,0.65) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .content-wrapper.visible {
+            opacity: 1;
+        }
+
+        /* Top Header Badge */
+        .header-badge {
+            position: absolute;
+            top: 3vh;
+            left: 3vw;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            padding: 1.2vw 2.5vw;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: clamp(14px, 1.4vw, 22px);
+            box-shadow: 0 10px 30px rgba(220,38,38,0.7);
+            animation: slideInLeft 0.8s ease-out 0.5s both;
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            z-index: 20;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .diamond {
+            font-size: clamp(16px, 1.5vw, 24px);
+        }
+
+        /* Now Open Badge */
+        .open-badge {
+            position: absolute;
+            top: 3vh;
+            right: 3vw;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.2vw 2.5vw;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: clamp(13px, 1.3vw, 20px);
+            box-shadow: 0 10px 30px rgba(16,185,129,0.6);
+            animation: slideInRight 0.8s ease-out 0.5s both, pulse 2.5s infinite 1.5s;
+            z-index: 20;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* Title Section */
+        .title-box {
+            position: absolute;
+            top: 15vh;
+            left: 3vw;
+            max-width: 45vw;
+            animation: fadeInUp 1s ease-out 0.8s both;
+            z-index: 20;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-title {
+            font-size: clamp(30px, 4.2vw, 68px);
+            font-weight: 900;
+            color: white;
+            text-shadow: 4px 4px 15px rgba(0,0,0,0.9);
+            line-height: 1.1;
+            margin-bottom: 1vh;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: clamp(16px, 1.9vw, 30px);
+            color: #d1fae5;
+            font-weight: 700;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.9);
+            margin-bottom: 1vh;
+        }
+
+        .tagline {
+            font-size: clamp(13px, 1.3vw, 20px);
+            color: #fde68a;
+            font-weight: 600;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+            font-style: italic;
+            max-width: 90%;
+        }
+
+        /* Location Info Card */
+        .location-card {
+            position: absolute;
+            top: 42vh;
+            left: 3vw;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            padding: 1.8vw 2.2vw;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+            max-width: 28vw;
+            animation: fadeInUp 1s ease-out 1.1s both;
+            z-index: 20;
+            border: 2px solid rgba(16,185,129,0.2);
+        }
+
+        .location-header {
+            font-size: clamp(13px, 1.2vw, 19px);
+            font-weight: 900;
+            color: #059669;
+            margin-bottom: 1.2vh;
+            display: flex;
+            align-items: center;
+            gap: 0.6vw;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .location-item {
+            font-size: clamp(11px, 1vw, 17px);
+            color: #1f2937;
+            margin: 0.8vh 0;
+            padding-left: 1.5vw;
+            position: relative;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .location-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: 900;
+            font-size: clamp(13px, 1.1vw, 19px);
+        }
+
+        /* Price & Features Card */
+        .price-card {
+            position: absolute;
+            bottom: 4vh;
+            right: 3vw;
+            background: linear-gradient(135deg, rgba(15,23,42,0.97) 0%, rgba(30,41,59,0.97) 100%);
+            backdrop-filter: blur(20px);
+            padding: 2.2vw 2.5vw;
+            border-radius: 22px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            max-width: 38vw;
+            animation: fadeInUp 1s ease-out 1.4s both;
+            border: 3px solid rgba(16,185,129,0.4);
+            z-index: 20;
+        }
+
+        .price-header {
+            font-size: clamp(13px, 1.2vw, 19px);
+            color: #a7f3d0;
+            margin-bottom: 0.5vh;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price {
+            font-size: clamp(34px, 3.8vw, 58px);
+            font-weight: 900;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2vh;
+            line-height: 1;
+            filter: drop-shadow(0 2px 8px rgba(251,191,36,0.4));
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1vh;
+            margin-bottom: 2vh;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            color: white;
+            font-size: clamp(11px, 1vw, 17px);
+            font-weight: 600;
+            line-height: 1.4;
+            padding: 0.6vh 0;
+        }
+
+        .feature-icon {
+            font-size: clamp(15px, 1.4vw, 23px);
+            min-width: 1.8vw;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .cta-button {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.3vw 2vw;
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: clamp(15px, 1.4vw, 23px);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1vw;
+            box-shadow: 0 10px 30px rgba(16,185,129,0.5);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(16,185,129,0.7);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        /* Corner Units Badge */
+        .corner-badge {
+            position: absolute;
+            bottom: 4vh;
+            left: 3vw;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.2vw 2vw;
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: clamp(13px, 1.2vw, 19px);
+            box-shadow: 0 10px 30px rgba(239,68,68,0.6);
+            animation: fadeInUp 1s ease-out 1.7s both;
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            z-index: 20;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .title-box {
+                max-width: 60vw;
+            }
+
+            .location-card {
+                max-width: 40vw;
+                top: 48vh;
+            }
+
+            .price-card {
+                max-width: 50vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-badge {
+                padding: 2vw 4vw;
+                top: 2vh;
+                left: 2vw;
+            }
+
+            .open-badge {
+                padding: 2vw 4vw;
+                top: 2vh;
+                right: 2vw;
+            }
+
+            .title-box {
+                max-width: 70vw;
+                top: 12vh;
+                left: 2vw;
+            }
+
+            .location-card {
+                max-width: 55vw;
+                top: 35vh;
+                left: 2vw;
+                padding: 3vw 4vw;
+            }
+
+            .corner-badge {
+                left: 2vw;
+                bottom: auto;
+                top: 58vh;
+                padding: 2.5vw 4vw;
+            }
+
+            .price-card {
+                max-width: 70vw;
+                right: 2vw;
+                bottom: 3vh;
+                padding: 4vw 5vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-badge {
+                font-size: 11px;
+                padding: 8px 15px;
+            }
+
+            .open-badge {
+                font-size: 10px;
+                padding: 8px 15px;
+            }
+
+            .main-title {
+                font-size: 26px;
+            }
+
+            .subtitle {
+                font-size: 15px;
+            }
+
+            .tagline {
+                font-size: 12px;
+            }
+
+            .location-card {
+                max-width: 70vw;
+                padding: 15px 20px;
+                top: 32vh;
+            }
+
+            .corner-badge {
+                font-size: 11px;
+                padding: 10px 18px;
+                top: 56vh;
+            }
+
+            .price-card {
+                max-width: 85vw;
+                padding: 20px 25px;
+            }
+
+            .price {
+                font-size: 30px;
+            }
+
+            .cta-button {
+                font-size: 13px;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- PASTE YOUR IMAGE URL HERE IN THE src="" -->
+        <img class="bg-image" id="bgImage" 
+             src="" 
+             alt="Kemuyang Avenue Property">
+        
+        <div class="overlay-gradient"></div>
+        
+        <!-- Upload Section (will hide after image loads) -->
+        <div class="upload-section" id="uploadSection">
+            <h2>📸 Load Your Property Image</h2>
+            <p style="color: #6b7280; margin-bottom: 20px;">Choose your image file to display the marketing overlay</p>
+            <input type="file" id="fileInput" accept="image/*">
+            <br>
+            <button onclick="loadImage()">Load Image</button>
+            <p style="margin-top: 20px; font-size: 14px; color: #6b7280;">
+                Or paste your image URL in the HTML code
+            </p>
+        </div>
+        
+        <div class="content-wrapper" id="contentWrapper">
+            <!-- Top Badges -->
+            <div class="header-badge">
+                <span class="diamond">💎</span>
+                <span>TYPE B DOUBLE STOREY</span>
+                <span class="diamond">💎</span>
+            </div>
+
+            <div class="open-badge">
+                NOW OPEN FOR BOOKING!
+            </div>
+
+            <!-- Title Section -->
+            <div class="title-box">
+                <h1 class="main-title">Kemuyang Avenue</h1>
+                <p class="subtitle">New Phase Launch 🌿</p>
+                <p class="tagline">Modern homes surrounded by greenery, designed for comfort, style, and harmony.</p>
+            </div>
+
+            <!-- Location Card -->
+            <div class="location-card">
+                <div class="location-header">
+                    📍 Peaceful Yet Connected
+                </div>
+                <div class="location-item">15 mins to Sibu Airport</div>
+                <div class="location-item">13 mins to Sibu General Hospital</div>
+                <div class="location-item">20 mins to Star Mega Mall</div>
+                <div class="location-item">30 mins to City Centre</div>
+            </div>
+
+            <!-- Corner Units Badge -->
+            <div class="corner-badge">
+                🏠 Limited Corner Units Available
+            </div>
+
+            <!-- Price & Features Card -->
+            <div class="price-card">
+                <div class="price-header">Starting From</div>
+                <div class="price">RM395,000</div>
+
+                <div class="features-list">
+                    <div class="feature">
+                        <span class="feature-icon">🎁</span>
+                        <span>Early Bird Enjoys Special Launch Price!</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">📄</span>
+                        <span>SPA Paid by Developer</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✅</span>
+                        <span>Free Loan Eligibility Check</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">💰</span>
+                        <span>Full Loan Available (T&C Apply)</span>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/601164446445" class="cta-button" target="_blank">
+                    <span>📱</span>
+                    <span>WhatsApp Us Now</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to load image from file input
+        function loadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const bgImage = document.getElementById('bgImage');
+                    bgImage.src = e.target.result;
+                    bgImage.classList.add('loaded');
+                    document.getElementById('uploadSection').style.display = 'none';
+                    document.getElementById('contentWrapper').classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Check if image src is already provided
+        window.onload = function() {
+            const bgImage = document.getElementById('bgImage');
+            if (bgImage.src && bgImage.src !== window.location.href) {
+                bgImage.classList.add('loaded');
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('contentWrapper').classList.add('visible');
+            }
+        };
+
+        // Allow drag and drop
+        const container = document.querySelector('.container');
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const bgImage = document.getElementById('bgImage');
+                    bgImage.src = event.target.result;
+                    bgImage.classList.add('loaded');
+                    document.getElementById('uploadSection').style.display = 'none';
+                    document.getElementById('contentWrapper').classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
